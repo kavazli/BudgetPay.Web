@@ -1,0 +1,121 @@
+## -------
+## .NET / C#
+## -------
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+out/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+
+# Visual Studio Code
+.vscode/
+!.vscode/extensions.json
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# MSBuild
+msbuild.log
+msbuild.wrn
+msbuild.err
+
+# Test results
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+coverage*/
+
+# Publish
+publish/
+PublishProfiles/
+
+# Entity Framework migrations backup (isteğe bağlı - migration dosyaları commitleniyor)
+# Uncomment if you want to exclude migrations:
+# */Migrations/
+
+## -------
+## SQLite
+## -------
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+!API/BudgetPayWeb.db
+
+## -------
+## Secrets / Config overrides
+## -------
+appsettings.*.json
+!appsettings.Development.json
+!API/appsettings.json
+!UI/appsettings.json
+secrets.json
+*.pfx
+*.p12
+*.key
+
+# User secrets (dotnet user-secrets)
+# launchSettings.json is intentionally tracked for cross-platform consistency
+
+## -------
+## macOS
+## -------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+## -------
+## Windows
+## -------
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+## -------
+## Linux
+## -------
+*~
+
+## -------
+## Logs
+## -------
+*.log
+logs/
+
+.fake

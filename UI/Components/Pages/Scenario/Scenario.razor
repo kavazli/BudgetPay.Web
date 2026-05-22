@@ -1,0 +1,291 @@
+﻿@page "/scenario"
+@rendermode InteractiveServer
+
+@using Domain.Scenario
+@using Domain.Enums
+
+
+<div class="Scenario-shell">
+
+  
+  
+
+ <main class="Scenario-content">
+
+
+  <div class="container mt-4">
+    <div class="card shadow-sm">
+  <div class="card-body">
+
+    <div class="row">
+
+      <!-- 1. Input -->
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text Scenario_label-width">Firma</span>
+          
+        <select class="form-control Scenario_custom-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" @bind="company">
+                        
+            <option value="@Company.Aster">Aster</option>
+            <option value="@Company.Artesa">Artesa</option>
+            <option value="@Company.Global">Global</option>
+            <option value="@Company.Setra">Setra</option>
+            <option value="@Company.Giyim">Giyim</option>
+
+        </select>
+
+
+        </div>
+      </div>
+
+      <!-- 2. Input -->
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text Scenario_label-width">Yıl</span>
+        
+        <select class="form-control Scenario_custom-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" @bind="scenarioYear" @bind:after="OnScenarioYearChanged">
+                    
+            <option >2026</option>
+            <option >2027</option>
+            
+
+        </select>
+
+
+        </div>
+      </div>
+
+     
+      
+
+      <!-- 4. Input -->
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text Scenario_label-width">Ekonomik Göstergeler</span>
+          <select class="form-control Scenario_custom-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" @bind="economicIndicator">
+                        
+            <option value="0">0</option>
+            <option value="@Indicators.RevaluationRate">Yeniden Değerleme</option>
+            <option value="@Indicators.InflationRate">Enflasyon</option>
+            <option value="@Indicators.MinimumWageIncreaseRate">Asgari ücret Artış</option>
+            
+
+          </select>
+        </div>
+      </div>
+
+      <!-- 5. Input -->
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text Scenario_label-width">Refah Payı</span>
+          <input type="text" class="form-control Scenario_custom-input" @bind="welfarShare">
+        </div>
+      </div>
+
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text Scenario_label-width">Artış Oranı</span>
+          <input type="text" class="form-control Scenario_custom-input" @bind="rafeOfIncrase">
+        </div>
+      </div>
+
+    <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text Scenario_label-width">Toplam Oran</span>
+            <input type="text" class="form-control Scenario_custom-input" value="@totalRate" readonly>
+        </div>
+      </div>
+
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text Scenario_label-width">Fm%50</span>
+            <input type="text" class="form-control Scenario_custom-input" @bind="overtime_50">
+        </div>
+      </div>
+
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text Scenario_label-width">Fm%100</span>
+            <input type="text" class="form-control Scenario_custom-input" @bind="overtime_100">
+        </div>
+      </div>
+
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text Scenario_label-width">Prim/ikramiye</span>
+            <input type="text" class="form-control Scenario_custom-input" @bind="bonus">
+        </div>
+      </div>
+
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text Scenario_label-width">Prim/İkramiye Ay</span>
+            <select class="form-control Scenario_custom-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" @bind="bonusMonth">
+              
+              <option value=0>0</option>
+              <option value=1>1</option>
+              <option value=2>2</option>
+              <option value=3>3</option>
+              <option value=4>4</option>
+              <option value=5>5</option>
+              <option value=6>6</option>
+              <option value=7>7</option>
+              <option value=8>8</option>
+              <option value=9>9</option>
+              <option value=10>10</option>
+              <option value=11>11</option>
+              <option value=12>12</option>
+            
+
+            </select>
+        </div>
+      </div>
+
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text Scenario_label-width">Alışveriş Çeki</span>
+            <input type="text" class="form-control Scenario_custom-input" @bind="shoppingVoucher">
+        </div>
+      </div>
+
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+            <span class="input-group-text Scenario_label-width">Alışveriş Çeki Ay</span>
+            <select class="form-control Scenario_custom-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" @bind="shoppingVoucherMonth">
+              
+              <option value=0>0</option>
+              <option value=1>1</option>
+              <option value=2>2</option>
+              <option value=3>3</option>
+              <option value=4>4</option>
+              <option value=5>5</option>
+              <option value=6>6</option>
+              <option value=7>7</option>
+              <option value=8>8</option>
+              <option value=9>9</option>
+              <option value=10>10</option>
+              <option value=11>11</option>
+              <option value=12>12</option>
+            
+
+            </select>
+        </div>
+      </div>
+
+
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text Scenario_label-width">Seneryo Adı</span>
+          <input type="text" class="form-control Scenario_custom-input" @bind="scenarioName">
+        </div>
+      </div>
+      
+      <div class="col-6 mb-3">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text Scenarios_label-width">Seneryoları Getir</span>
+          
+          <select class="form-control Scenario_custom-input" aria-label="Small" aria-describedby="inputGroup-sizing-sm" @bind="scenarioName" @bind:after="LoadScenarioDetail">
+                        
+            <option value="0">0</option>
+            @foreach(var item in Scenarios)
+            {
+              <option value="@item.ScenarioName">@item.ScenarioName</option>
+            }
+            
+
+          </select>
+          
+        </div>
+      </div>
+
+    </div><!-- /row -->
+
+    <!-- Butonlar -->
+    <div class="d-flex justify-content-center gap-2 mt-2">
+        <button class="btn Scenario_costom-btn" @onclick="() => ScenarioAdd()">Kaydet</button>
+        <button class="btn Scenario_costom-btn" @onclick="() => UpdateScenario()">Güncelle</button>
+        <button class="btn Scenario_costom-btn" @onclick="() => DeleteScenario()">Sil</button>
+        <button class="btn Scenario_costom-btn" @onclick="() => DeleteAllScenarios()">Tümünü Sil</button>
+    </div>
+
+  </div>
+</div>
+    
+
+    </div>
+
+    @if (!string.IsNullOrEmpty(ScenarioMessage))
+    {
+        <div class="alert alert-warning mt-2" role="alert">
+            @ScenarioMessage
+        </div>
+    }
+
+    <hr>
+    <br>
+    <br>
+
+    <div class="container mt-4">
+
+      <table class="table table-hover ">
+        <thead>
+
+          <tr class="table-light">
+            <th scope="col">Firma</th>
+            <th scope="col">Yıl</th>
+            <th scope="col">Adı</th>
+            <th scope="col">Göstergeler</th>
+            <th scope="col">Refah Payı</th>
+            <th scope="col">Artış Oranı</th>
+            <th scope="col">Toplam Oran</th>
+            <th scope="col">FM50</th>
+            <th scope="col">FM100</th>
+            <th scope="col">Bonus</th>
+            <th scope="col">Bonus Ay</th>
+            <th scope="col">A.Çeki</th>
+            <th scope="col">A.Çeki Ay</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          
+          @if (Scenarios.Count != 0)
+          {
+            @foreach (var item in Scenarios)
+            {
+              <tr class="table-font">
+                <td>@item.Company</td>
+                <td>@item.Year</td>
+                <td>@item.ScenarioName</td>
+                <td>@item.EconomicIndicator</td>
+                <td>@item.WelfarShare</td>
+                <td>@item.RafeOfIncrase</td>
+                <td>@item.TotalRate</td>
+                <td>@item.Overtime_50</td>
+                <td>@item.Overtime_100</td>
+                <td>@item.Bonus</td>
+                <td>@item.BonusMonth</td>
+                <td>@item.ShoppingVoucher</td>
+                <td>@item.ShoppingVoucherMonth</td>
+                
+            </tr>
+            }
+          }
+          else
+          {
+            <tr>
+              <td colspan="5" class="text-center">Senaryo tablosunda henüz kayıtlı veri yok.</td>
+            </tr>
+          }
+           
+
+        </tbody>
+      </table>
+
+    </div>
+
+    </main>
+
+</div>
+
+ 

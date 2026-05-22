@@ -1,0 +1,935 @@
+﻿@page "/adminPanel"
+@rendermode InteractiveServer
+@using Domain.TaxParameters
+@using Domain.Enums
+
+
+<div class="admin-shell">
+
+  
+  <aside class="admin-sidebar">
+    <div class="container-fluid text-center">
+      <div class="row" style="padding: 12px;">
+        <div class="col">
+          <button type="button" class="btn AdminPanel_costom-btn @(ActiveTab == "ShowMinimumWage" ? "active" : "")" @onclick='() => SetTab("ShowMinimumWage")'>Asgari Ücret</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn AdminPanel_costom-btn @(ActiveTab == "ShowSSParams" ? "active" : "")" @onclick='() => SetTab("ShowSSParams")'>SGK Parametreleri</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn AdminPanel_costom-btn @(ActiveTab == "ShowStampTax" ? "active" : "")" @onclick='() => SetTab("ShowStampTax")'>Damga Vergisi</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn AdminPanel_costom-btn @(ActiveTab == "ShowIncomeTax" ? "active" : "")" @onclick='() => SetTab("ShowIncomeTax")'>Gelir Vergisi</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn AdminPanel_costom-btn @(ActiveTab == "ShowDisabilityDegree" ? "active" : "")" @onclick='() => SetTab("ShowDisabilityDegree")'>Engelli İndirimi</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn AdminPanel_costom-btn @(ActiveTab == "ShowEconomicIndicators" ? "active" : "")" @onclick='() => SetTab("ShowEconomicIndicators")'>Ekonomik Göstergeler</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+ <main class="admin-content">
+
+@if (ActiveTab == "ShowMinimumWage")
+{
+
+  <div class="container mt-4">
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <!-- 1. Alan -->
+        <div class="row mb-2">
+    
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Yıl</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="minimum_wageYear">
+
+          </div>
+
+        </div>
+
+        <!-- 2. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Brüt Asgari Ücret</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="grossSalary">
+
+          </div>
+
+        </div>
+
+        <!-- 3. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Net Asgari Ücret</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="netSalary">
+
+          </div>
+
+        </div>
+
+        <!-- 4. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Emekli Net Asgari
+                Ücret</span>
+              </div>
+
+              <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                      aria-describedby="inputGroup-sizing-sm" @bind="retiredNetSalary">
+
+            </div>
+
+          </div>
+
+          <!-- 5. Alan -->
+          <div class="row mb-1">
+
+            <div class="input-group input-group-sm mb-3">
+
+              <div class="input-group-prepend">
+                <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">SGK Tavanı</span>
+              </div>
+
+              <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                      aria-describedby="inputGroup-sizing-sm" @bind="ceiling">
+
+            </div>
+
+          </div>
+
+          <!-- Buton -->
+          <div class="row mt-1">
+            <div class="col-3"></div>
+            <div class="col-9 d-flex gap-2">
+              <button class="btn AdminPanel_costom-btn" @onclick="() => MinimumWageAdd()">Kaydet</button>
+              <button class="btn AdminPanel_costom-btn" @onclick="() => MinimumWageUpdate()">Güncelle</button>
+              <button class="btn AdminPanel_costom-btn" @onclick="() => MinimumWageDelete()">Sil</button>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    @if (!string.IsNullOrEmpty(MinimumWageMessage))
+    {
+        <div class="alert alert-warning mt-2" role="alert">
+            @MinimumWageMessage
+        </div>
+    }
+
+    <hr>
+    <br>
+    <br>
+
+    <div class="container mt-4">
+
+      <table class="table table-hover ">
+        <thead>
+
+          <tr class="table-light">
+            <th scope="col">Yıl</th>
+            <th scope="col">Brüt</th>
+            <th scope="col">Net</th>
+            <th scope="col">Emekli Net</th>
+            <th scope="col">SGK Tavanı</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          
+          @if (MinimumWages.Count != 0)
+          {
+              @foreach (var item in MinimumWages  )
+            {
+              <tr class="table-font">
+                <td>@item.Year</td>
+                <td>@item.GrossSalary.ToString("N2")</td>
+                <td>@item.NetSalary.ToString("N2")</td>
+                <td>@item.RetiredNetSalary.ToString("N2")</td>
+                <td>@item.Ceiling.ToString("N2")</td>
+            </tr>
+            }
+          }
+          else
+          {
+            <tr>
+              <td colspan="5" class="text-center">Asgari ücret tablosunda henüz kayıtlı veri yok.</td>
+            </tr>
+          }
+           
+
+        </tbody>
+      </table>
+
+    </div>
+
+  }
+
+
+@if (ActiveTab == "ShowSSParams")
+  {
+    <div class="container mt-4">
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+          <!-- 1. Alan -->
+          <div class="row mb-2">
+      
+            <div class="input-group input-group-sm mb-3">
+
+              <div class="input-group-prepend">
+                <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Yıl</span>
+              </div>
+
+              <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                      aria-describedby="inputGroup-sizing-sm" @bind="ssParamsYear">
+
+            </div>
+
+          </div>
+
+          <!-- 2. Alan -->
+          <div class="row mb-1">
+
+            <div class="input-group input-group-sm mb-3">
+
+              <div class="input-group-prepend">
+                <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">SGK İşçi Payı</span>
+              </div>
+
+              <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                      aria-describedby="inputGroup-sizing-sm" @bind="ActiveEmployeeSSRate">
+
+            </div>
+
+          </div>
+
+          <!-- 3. Alan -->
+          <div class="row mb-1">
+
+            <div class="input-group input-group-sm mb-3">
+
+              <div class="input-group-prepend">
+                <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">SGK İşçi İşsizlik
+                  Payı</span>
+                </div>
+
+                <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                        aria-describedby="inputGroup-sizing-sm" @bind="ActiveEmployeeUIRate">
+
+              </div>
+
+            </div>
+
+            <!-- 4. Alan -->
+            <div class="row mb-1">
+
+              <div class="input-group input-group-sm mb-3">
+
+                <div class="input-group-prepend">
+                  <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">SGK İşveren Payı</span>
+                </div>
+
+                <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                        aria-describedby="inputGroup-sizing-sm" @bind="ActiveEmployerSSRate">
+
+              </div>
+
+            </div>
+
+            <!-- 5. Alan -->
+            <div class="row mb-1">
+
+              <div class="input-group input-group-sm mb-3">
+
+                <div class="input-group-prepend">
+                  <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">SGK İşveren İşsizlik
+                    Payı</span>
+                  </div>
+
+                  <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                          aria-describedby="inputGroup-sizing-sm" @bind="ActiveEmployerUIRate">
+
+                </div>
+
+              </div>
+  
+              <!-- 6. Alan -->
+              <div class="row mb-1">
+
+                <div class="input-group input-group-sm mb-3">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">SGK Emekli İşçi Payı</span>
+                  </div>
+
+                  <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                          aria-describedby="inputGroup-sizing-sm" @bind="RetiredEmployeeSSRate">
+
+                </div>
+
+              </div>
+
+
+              <!-- 7. Alan -->
+              <div class="row mb-1">
+
+                <div class="input-group input-group-sm mb-3">
+
+                  <div class="input-group-prepend">
+                    <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">SGK Emekli İşveren
+                      Payı</span>
+                    </div>
+
+                    <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                            aria-describedby="inputGroup-sizing-sm" @bind="RetiredEmployerSSRate">
+
+                  </div>
+
+                </div>
+
+
+
+
+
+                <!-- Buton -->
+                <div class="row mt-1">
+                  <div class="col-3"></div>
+                  <div class="col-9 d-flex gap-2">
+                    <button class="btn AdminPanel_costom-btn" @onclick="() => SSParamsAdd()">Kaydet</button>
+                    <button class="btn AdminPanel_costom-btn" @onclick="() => SSParamsUpdate()">Güncelle</button>
+                    <button class="btn AdminPanel_costom-btn" @onclick="() => SSParamsDelete()">Sil</button>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+      @if (!string.IsNullOrEmpty(SSParamsMessage))
+      {
+        <div class="alert alert-warning mt-2" role="alert">
+          @SSParamsMessage
+        </div>
+      }
+
+
+          <hr>
+          <br>
+          <br>
+
+          <div class="container mt-4">
+
+            <table class="table table-hover">
+              <thead>
+                <tr class="table-light">
+                  <th scope="col">Yıl</th>
+                  <th scope="col">SGK İşçi</th>
+                  <th scope="col">SGK İşveren</th>
+                  <th scope="col">SGK İşçi İşsizlik</th>
+                  <th scope="col">SGK İşveren İşsizlik</th>
+                  <th scope="col">SGK Emekli işci</th>
+                  <th scope="col">SGK Emekli İşveren</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                @if (SSParamsList.Count != 0)
+                {
+                    @foreach (var item in SSParamsList)
+                    {
+                      <tr class="table-font">
+                        <td>@item.Year</td>
+                        <td>@item.ActiveEmployeeSSRate.ToString("N2")</td>
+                        <td>@item.ActiveEmployerSSRate</td>
+                        <td>@item.ActiveEmployeeUIRate</td>
+                        <td>@item.ActiveEmployerUIRate</td>
+                        <td>@item.RetiredEmployeeSSRate</td>
+                        <td>@item.RetiredEmployerSSRate</td>
+                      </tr>
+                    }
+                }
+                else
+                {
+                  <tr>
+                    <td colspan="7" class="text-center">SGK parametreleri tablosunda henüz kayıtlı veri yok.</td>
+                  </tr>
+                }
+
+              </tbody>
+            </table>
+
+          </div>
+        }
+
+
+@if (ActiveTab == "ShowStampTax")
+{
+
+  <div class="container mt-4">
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <!-- 1. Alan -->
+        <div class="row mb-2">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Yıl</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="StampTaxYear">
+
+          </div>
+
+        </div>
+
+        <!-- 2. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Damga Vergisi Oranı</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="rate">
+
+          </div>
+
+        </div>
+
+        <!-- Buton -->
+        <div class="row mt-1">
+          <div class="col-3"></div>
+          <div class="col-9 d-flex gap-2">
+            <button class="btn AdminPanel_costom-btn" @onclick="() => StampTaxAdd()">Kaydet</button>
+            <button class="btn AdminPanel_costom-btn" @onclick="() => StampTaxUpdate()">Güncelle</button>
+            <button class="btn AdminPanel_costom-btn" @onclick="() => StampTaxDelete()">Sil</button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+@if (!string.IsNullOrEmpty(StampTaxMessage))
+{
+<div class="alert alert-warning mt-2" role="alert">
+  @StampTaxMessage
+</div>
+}
+
+
+  <hr>
+  <br>
+  <br>
+
+  <div class="container mt-4">
+
+    <table class="table table-hover">
+      <thead>
+        <tr class="table-light">
+          <th scope="col">Yıl</th>
+          <th scope="col">Damga Vergisi Oranı</th>
+
+
+        </tr>
+      </thead>
+      <tbody>
+        @if (StampTaxes.Count != 0)
+        {
+            @foreach (var item in StampTaxes)
+            {
+              <tr class="table-font">
+                <td>@item.Year</td>
+                <td>@item.Rate</td>
+              </tr>
+            }
+        }
+        else
+        {
+          <tr>
+            <td colspan="2" class="text-center">Damga vergisi tablosunda henüz kayıtlı veri yok.</td>
+          </tr>
+        }
+
+      </tbody>
+    </table>
+
+  </div>
+
+}
+
+
+@if (ActiveTab == "ShowIncomeTax")
+{
+
+  <div class="container mt-4">
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <!-- 1. Alan -->
+        <div class="row mb-2">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Yıl</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="ıncomeTaxYear">
+
+          </div>
+
+        </div>
+
+        <!-- 2. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Dilim</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="bracket">
+
+          </div>
+
+        </div>
+
+        <!-- 3. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Balangıç Matrahı</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="minAmount">
+
+          </div>
+
+        </div>
+
+        <!-- 4. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Bitiş Matrahı</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="maxAmount">
+
+          </div>
+
+        </div>
+
+        <!-- 5. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Oran</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="taxRate">
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Buton -->
+        <div class="row mt-1">
+          <div class="col-3"></div>
+          <div class="col-9 d-flex gap-2">
+            <button class="btn AdminPanel_costom-btn" @onclick="() => IncomeTaxAdd()">Kaydet</button>
+            <button class="btn AdminPanel_costom-btn" @onclick="() => IncomeTaxUpdate()">Güncelle</button>
+            <button class="btn AdminPanel_costom-btn" @onclick="() => IncomeTaxDelete()">Sil</button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+@if (!string.IsNullOrEmpty(IncomeTaxMessage))
+{
+<div class="alert alert-warning mt-2" role="alert">
+  @IncomeTaxMessage
+</div>
+}
+
+
+  <hr>
+  <br>
+  <br>
+
+  <div class="container mt-4">
+    <table class="table table-hover">
+      <thead>
+        <tr class="table-light">
+          <th scope="col">Yıl</th>
+          <th scope="col">Dilim</th>
+          <th scope="col">Başlangıç Matrahı</th>
+          <th scope="col">Bitiş Matrahı</th>
+          <th scope="col">Oran</th>
+
+
+        </tr>
+      </thead>
+      <tbody>
+        @if (IncomeTaxBrackets != null && IncomeTaxBrackets.Count != 0)
+        {
+            @foreach (var item in IncomeTaxBrackets)
+            {
+              <tr class="table-font">
+                <td>@item.Year</td>
+                <td>@item.Bracket</td>
+                <td>@item.MinAmount.ToString("N2")</td>
+                <td>@item.MaxAmount.ToString("N2")</td>
+                <td>@item.Rate.ToString("N2")</td>
+              </tr>
+            }
+        }
+        else
+        {
+          <tr>
+            <td colspan="5" class="text-center">Gelir vergisi tablosunda henüz kayıtlı veri yok.</td>
+          </tr>
+        }
+
+      </tbody>
+    </table>
+  </div>
+}
+
+
+@if (ActiveTab == "ShowDisabilityDegree")
+        {
+
+          <div class="container mt-4">
+
+            <div class="card shadow-sm">
+              <div class="card-body">
+
+                <!-- 1. Alan -->
+                <div class="row mb-2">
+      
+                  <div class="input-group input-group-sm mb-3">
+
+                    <div class="input-group-prepend">
+                      <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Yıl</span>
+                    </div>
+
+                    <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                            aria-describedby="inputGroup-sizing-sm" @bind="disabilityDegreeYear">
+
+                  </div>
+
+                </div>
+
+                <!-- 2. Alan -->
+                <div class="row mb-1">
+
+                  <div class="input-group input-group-sm mb-3">
+
+                    <div class="input-group-prepend">
+                      <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Derece</span>
+                    </div>
+
+                    <select class="form-control AdminPanel_custom-input" aria-label="Small"
+                            aria-describedby="inputGroup-sizing-sm" @bind="degree">
+                      <option value="@Degree.None">Derece Seçiniz</option>
+                      <option value="@Degree.oneDegree">1. Derece</option>
+                      <option value="@Degree.twoDegree">2. Derece</option>
+                      <option value="@Degree.threeDegree">3. Derece</option>
+                    </select>
+
+                  </div>
+
+                </div>
+
+                <!-- 3. Alan -->
+                <div class="row mb-1">
+
+                  <div class="input-group input-group-sm mb-3">
+
+                    <div class="input-group-prepend">
+                      <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">İndirim Tutarı</span>
+                    </div>
+
+                    <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                            aria-describedby="inputGroup-sizing-sm" @bind="amount">
+
+                  </div>
+
+                </div>
+
+  
+                <!-- Buton -->
+                <div class="row mt-1">
+                  <div class="col-3"></div>
+                  <div class="col-9 d-flex gap-2">
+                    <button class="btn AdminPanel_costom-btn" @onclick="() => DisabilityDegreeAdd()">Kaydet</button>
+                    <button class="btn AdminPanel_costom-btn" @onclick="() => DisabilityDegreeUpdate()">Güncelle</button>
+                    <button class="btn AdminPanel_costom-btn" @onclick="() => DisabilityDegreeDelete()">Sil</button>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+      @if (!string.IsNullOrEmpty(DisabilityDegreeMessage))
+      {
+        <div class="alert alert-warning mt-2" role="alert">
+          @DisabilityDegreeMessage
+        </div>
+      }
+
+
+          <hr>
+          <br>
+          <br>
+
+          <div class="container mt-4">
+            <table class="table table-hover">
+              <thead>
+                <tr class="table-light">
+                  <th scope="col">Yıl</th>
+                  <th scope="col">Derece</th>
+                  <th scope="col">İndirim Tutarı</th>
+
+
+
+                </tr>
+              </thead>
+              <tbody>
+                @if (DisabilityDegrees.Count != 0)
+                {
+                    @foreach (var item in DisabilityDegrees)
+                    {
+                      <tr class="table-font">
+                        <td>@item.Year</td>
+                        <td>@item.Degree</td>
+                        <td>@item.Amount.ToString("N2")</td>
+                      </tr>
+                    }
+                }
+                else
+                {
+                  <tr>
+                    <td colspan="3" class="text-center">Engelli indirimi tablosunda henüz kayıtlı veri yok.</td>
+                  </tr>
+                }
+
+              </tbody>
+            </table>
+          </div>
+        }
+
+
+@if (ActiveTab == "ShowEconomicIndicators")
+{
+
+  <div class="container mt-4">
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <!-- 1. Alan -->
+        <div class="row mb-2">
+    
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Yıl</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="economicIndicatorsYear">
+
+          </div>
+
+        </div>
+
+        <!-- 2. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Asgari Ücret Artış Oranı</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="minimumWageIncreaseRate">
+          </div>
+
+        </div>
+
+        <!-- 3. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Enflasyon Oranı</span>
+            </div>
+
+            <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                    aria-describedby="inputGroup-sizing-sm" @bind="inflationRate">
+          </div>
+
+        </div>
+
+        <!-- 4. Alan -->
+        <div class="row mb-1">
+
+          <div class="input-group input-group-sm mb-3">
+
+            <div class="input-group-prepend">
+              <span class="input-group-text AdminPanel_label-width" id="inputGroup-sizing-sm">Yeniden değerleme Oranı</span>
+              </div>
+
+              <input type="text" class="form-control AdminPanel_custom-input" aria-label="Small"
+                      aria-describedby="inputGroup-sizing-sm" @bind="RevaluationRate">
+
+            </div>
+
+          </div>
+
+          <!-- 5. Alan -->
+          
+
+          <!-- Buton -->
+          <div class="row mt-1">
+            <div class="col-3"></div>
+            <div class="col-9 d-flex gap-2">
+              <button class="btn AdminPanel_costom-btn" @onclick="() => EconomicIndicatorsAdd()">Kaydet</button>
+              <button class="btn AdminPanel_costom-btn" @onclick="() => EconomicIndicatorsUpdate()">Güncelle</button>
+              <button class="btn AdminPanel_costom-btn" @onclick="() => EconomicIndicatorsDelete()">Sil</button>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    @if (!string.IsNullOrEmpty(EconomicIndicatorsMessage))
+    {
+        <div class="alert alert-warning mt-2" role="alert">
+            @EconomicIndicatorsMessage
+        </div>
+    }
+
+    <hr>
+    <br>
+    <br>
+
+    <div class="container mt-4">
+
+      <table class="table table-hover ">
+        <thead>
+
+          <tr class="table-light">
+            <th scope="col">Yıl</th>
+            <th scope="col">Asgari Ücret Artış Oranı</th>
+            <th scope="col">Enflasyon Oranı</th>
+            <th scope="col">Yeniden Değerleme Oranı</th>
+            
+          </tr>
+
+        </thead>
+        <tbody>
+          
+          @if (EconomicIndicatorsList.Count != 0)
+          {
+              @foreach (var item in EconomicIndicatorsList  )
+            {
+              <tr class="table-font">
+                <td>@item.Year</td>
+                <td>@item.MinimumWageIncreaseRate</td>
+                <td>@item.InflationRate</td>
+                <td>@item.RevaluationRate</td>
+            </tr>
+            }
+          }
+          else
+          {
+            <tr>
+              <td colspan="5" class="text-center">Ekonomik göstergeler tablosunda henüz kayıtlı veri yok.</td>
+            </tr>
+          }
+           
+
+        </tbody>
+      </table>
+
+    </div>
+
+  }
+
+  </main>
+</div>
+
+
+

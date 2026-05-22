@@ -1,0 +1,58 @@
+# .gitattributes - Cross-platform line ending normalization
+# Windows'ta CRLF, Mac/Linux'ta LF kullanımını otomatik yönetir
+
+# Tüm text dosyalarını LF olarak depola, checkout sırasında otomatik dönüştür
+* text=auto eol=lf
+
+# C# / .NET kaynak dosyaları
+*.cs     text eol=lf
+*.csx    text eol=lf
+*.vb     text eol=lf
+*.sln    text eol=lf merge=union
+*.csproj text eol=lf
+*.props  text eol=lf
+*.targets text eol=lf
+
+# Web / Razor
+*.razor  text eol=lf
+*.html   text eol=lf
+*.css    text eol=lf
+*.js     text eol=lf
+*.ts     text eol=lf
+*.json   text eol=lf
+
+# Config
+*.xml    text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.md     text eol=lf
+*.txt    text eol=lf
+*.sh     text eol=lf
+
+# Windows script files should keep CRLF
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+*.ps1    text eol=crlf
+
+# Binary dosyalar (line ending dönüşümü yapılmaz)
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.svg    binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.eot    binary
+*.otf    binary
+*.pdf    binary
+*.zip    binary
+*.tar    binary
+*.gz     binary
+*.db     binary
+*.sqlite binary
+*.nupkg  binary
+*.dll    binary
+*.exe    binary
+*.pdb    binary

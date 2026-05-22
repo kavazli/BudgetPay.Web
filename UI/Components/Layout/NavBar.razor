@@ -1,0 +1,30 @@
+@using Microsoft.AspNetCore.Components.Routing
+
+<style>
+    .sideBar a {
+        color: white !important;
+        text-decoration: none !important;
+    }
+</style>
+
+<div class="sideBar">
+    <div class="sideBar-title">BudgetPay</div>
+
+    <hr>
+    <br>
+    <br>
+    
+
+<NavLink href="/" class="nav-item" activeClass="active" Match="NavLinkMatch.All">
+    <i class="bi bi-house-door" style="font-size:45px;" ></i>
+</NavLink>
+
+<NavLink href="/scenario" class="nav-item" activeClass="active">
+    <i class="bi bi-layout-wtf" style="font-size:45px;" ></i>
+</NavLink>
+
+<NavLink href="/adminPanel" class="nav-item" activeClass="active">
+    <i class="bi bi-sliders" style="font-size:45px;" ></i>
+</NavLink>
+
+</div>
